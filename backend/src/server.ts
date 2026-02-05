@@ -4,6 +4,7 @@ import path from 'path';
 import { config, validateConfig } from './utils/config';
 import { logger } from './utils/logger';
 import comicRoutes from './routes/comicRoutes';
+import historyRoutes from './routes/historyRoutes';
 
 /**
  * Express 服务器主文件
@@ -27,6 +28,7 @@ function createApp() {
 
   // API 路由
   app.use('/api', comicRoutes);
+  app.use('/api/history', historyRoutes);
 
   // 根路由
   app.get('/', (req, res) => {
@@ -37,6 +39,10 @@ function createApp() {
         health: 'GET /api/health',
         generateScript: 'POST /api/generate-script',
         generateComic: 'POST /api/generate-comic',
+        history: 'GET /api/history',
+        historyDetail: 'GET /api/history/:id',
+        saveHistory: 'POST /api/history',
+        deleteHistory: 'DELETE /api/history/:id',
       },
     });
   });

@@ -45,7 +45,7 @@ export function recommendShotSequence(panels: ComicPanel[]): ShotRecommendation[
   
   // 根据场景关键词智能调整推荐
   panels.forEach((panel, index) => {
-    const scene = panel.sceneDescription.toLowerCase();
+    const scene = panel.scene.toLowerCase();
     const dialogue = panel.dialogue.toLowerCase();
     
     if (!recommendations[index]) {
@@ -114,7 +114,7 @@ export function recommendShotSequence(panels: ComicPanel[]): ShotRecommendation[
 
 // 为单个分格推荐镜头
 export function recommendShotForPanel(panel: ComicPanel): ShotRecommendation {
-  const scene = panel.sceneDescription.toLowerCase();
+  const scene = panel.scene.toLowerCase();
   const dialogue = panel.dialogue.toLowerCase();
   
   let shotType = ShotType.MEDIUM_SHOT;

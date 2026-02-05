@@ -91,7 +91,7 @@ export class ImageService {
       logger.info(`  生成第 ${panel.id} 格分镜...`);
 
       // 构建分镜图的 Prompt
-      const prompt = this.buildPanelPrompt(panel.sceneDescription, characterDescription);
+      const prompt = this.buildPanelPrompt(panel.scene, characterDescription);
 
       // 调用 AI 生成图片
       const imageUrl = await aiClient.generateImage(prompt);

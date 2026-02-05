@@ -10,6 +10,8 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { toast } from 'sonner'
 import { ScriptEditor, ComicScript as ScriptEditorScript } from '@/components/ScriptEditor'
 import { ShotSelector } from '@/components/ShotSelector'
+import { HistoryList } from '@/components/HistoryList'
+import { HistoryDetail } from '@/components/HistoryDetail'
 
 function App() {
   const [topic, setTopic] = useState('')
@@ -17,6 +19,8 @@ function App() {
   const [script, setScript] = useState<ScriptEditorScript | null>(null)
   const [generatingImages, setGeneratingImages] = useState(false)
   const [currentStep, setCurrentStep] = useState<'input' | 'edit' | 'shot' | 'comic'>('input')
+  const [currentView, setCurrentView] = useState<'create' | 'history' | 'detail'>('create')
+  const [selectedComicId, setSelectedComicId] = useState<string | null>(null)
 
   const generateScript = async () => {
     if (!topic.trim()) {
@@ -99,6 +103,24 @@ function App() {
     setTopic('')
     setScript(null)
     setCurrentStep('input')
+    setCurrentView('create')
+    setSelectedComicId(null)
+  }
+
+  const handleSelectComic = (comicId: string) => {
+    setSelectedComicId(comicId)
+    setCurrentView('detail')
+  }
+
+  const handleEditComic = (comicScript: any) => {
+    setScript(comicScript)
+    setCurrentStep('edit')
+    setCurrentView('create')
+  }
+
+  const handleBackToHistory = () => {
+    setCurrentView('history')
+    setSelectedComicId(null)
   }
 
   return (
@@ -118,20 +140,45 @@ function App() {
                 <p className="text-sm text-gray-500">专业编剧 + 分镜师工具</p>
               </div>
             </div>
-            {currentStep !== 'input' && (
-              <Button variant="outline" onClick={resetApp}>
-                <Edit2 className="w-4 h-4 mr-2" />
-                新建漫画
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              <Tabs value={currentView === 'detail' ? 'history' : currentView} onValueChange={(v) => setCurrentView(v as any)}>
+                <TabsList>
+                  <TabsTrigger value="create">生成漫画</TabsTrigger>
+                  <TabsTrigger value="history">历史记录</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              {currentStep !== 'input' && currentView === 'create' && (
+                <Button variant="outline" onClick={resetApp}>
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  新建漫画
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        {/* Step 1: Input */}
-        {currentStep === 'input' && (
+        {/* History List View */}
+        {currentView === 'history' && (
+          <HistoryList onSelectComic={handleSelectComic} />
+        )}
+
+        {/* History Detail View */}
+        {currentView === 'detail' && selectedComicId && (
+          <HistoryDetail
+            comicId={selectedComicId}
+            onBack={handleBackToHistory}
+            onEdit={handleEditComic}
+          />
+        )}
+
+        {/* Create View */}
+        {currentView === 'create' && (
+          <>
+            {/* Step 1: Input */}
+            {currentStep === 'input' && (
           <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-500">
             <Card className="border-2">
               <CardHeader>
@@ -401,6 +448,8 @@ function App() {
               </TabsContent>
             </Tabs>
           </div>
+            )}
+          </>
         )}
       </main>
 

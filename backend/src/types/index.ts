@@ -28,13 +28,13 @@ export enum CameraAngle {
 
 export interface ComicPanel {
   id: number;                      // 分格ID（1-4）
-  sceneDescription: string;        // 场景描述（可编辑）
+  scene: string;                   // 场景描述（可编辑）
   dialogue: string;                // 对话（可编辑）
   imagePrompt?: string;            // 生成图像的完整Prompt
   imageUrl?: string;               // 生成的图片URL
   bubbleImageUrl?: string;         // 带对话气泡的图片URL
-  shotType?: ShotType;             // 景别
-  cameraAngle?: CameraAngle;       // 角度
+  shotType: string;                // 景别
+  cameraAngle: string;             // 角度
   generatedAt?: Date;              // 生成时间
 }
 
@@ -42,12 +42,11 @@ export interface ComicScript {
   id: string;                      // 脚本ID
   userId?: string;                 // 用户ID（可选）
   topic: string;                   // 原始创意
-  title: string;                   // 标题
-  characterDescription: string;    // 角色描述
+  characterDesign: string;         // 角色描述
   characterImageUrl?: string;      // 角色设定图URL
   panels: ComicPanel[];            // 分格数组
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: string;              // 创建时间
+  updatedAt?: string;              // 更新时间
   status: 'draft' | 'generating' | 'completed'; // 状态
 }
 

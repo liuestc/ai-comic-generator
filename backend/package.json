@@ -17,6 +17,7 @@
     "@google/generative-ai": "^0.24.1",
     "@types/uuid": "^10.0.0",
     "axios": "^1.13.4",
+    "better-sqlite3": "^12.6.2",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -26,6 +27,7 @@
     "yaml": "^2.8.2"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.0",

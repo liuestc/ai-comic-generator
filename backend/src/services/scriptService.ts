@@ -54,17 +54,16 @@ export class ScriptService {
       const script: ComicScript = {
         id: scriptId,
         topic,
-        title: parsedScript.title,
-        characterDescription: parsedScript.characterDescription,
+        characterDesign: parsedScript.characterDescription,
         panels: parsedScript.panels.map((p: any, index: number) => ({
           id: index + 1,
-          sceneDescription: p.sceneDescription,
+          scene: p.sceneDescription,
           dialogue: p.dialogue,
           shotType: ShotType.MEDIUM_SHOT,      // 默认中景
           cameraAngle: CameraAngle.EYE_LEVEL   // 默认平视
         })),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         status: 'draft'
       };
 
@@ -80,7 +79,7 @@ export class ScriptService {
       // 保存到存储
       scriptStore.set(scriptId, script);
 
-      logger.success(`✅ 脚本生成成功，耗时 ${elapsed}s，标题: ${script.title}，ID: ${scriptId}`);
+      logger.success(`✅ 脚本生成成功，耗时 ${elapsed}s，主题: ${script.topic}，ID: ${scriptId}`);
 
       return script;
     } catch (error: any) {
@@ -122,27 +121,27 @@ export class ScriptService {
         // 合并更新
         script.panels[panelIndex] = {
           id: originalPanel.id,
-          sceneDescription: updatedPanel.sceneDescription || originalPanel.sceneDescription,
+          scene: updatedPanel.scene || originalPanel.scene,
           dialogue: updatedPanel.dialogue || originalPanel.dialogue,
           imagePrompt: updatedPanel.imagePrompt || originalPanel.imagePrompt,
           shotType: updatedPanel.shotType || originalPanel.shotType,
           cameraAngle: updatedPanel.cameraAngle || originalPanel.cameraAngle,
           // 如果场景或对话改变，清除已生成的图片
-          imageUrl: updatedPanel.sceneDescription !== originalPanel.sceneDescription 
+          imageUrl: updatedPanel.scene !== originalPanel.scene 
             ? undefined 
             : originalPanel.imageUrl,
-          bubbleImageUrl: updatedPanel.sceneDescription !== originalPanel.sceneDescription || 
+          bubbleImageUrl: updatedPanel.scene !== originalPanel.scene || 
                          updatedPanel.dialogue !== originalPanel.dialogue
             ? undefined 
             : originalPanel.bubbleImageUrl,
           generatedAt: originalPanel.generatedAt
         };
 
-        logger.debug(`更新分格 ${updatedPanel.id}: 场景=${!!updatedPanel.sceneDescription}, 对话=${!!updatedPanel.dialogue}, 景别=${updatedPanel.shotType}, 角度=${updatedPanel.cameraAngle}`);
+        logger.debug(`更新分格 ${updatedPanel.id}: 场景=${!!updatedPanel.scene}, 对话=${!!updatedPanel.dialogue}, 景别=${updatedPanel.shotType}, 角度=${updatedPanel.cameraAngle}`);
       }
     });
 
-    script.updatedAt = new Date();
+    script.updatedAt = new Date().toISOString();
     scriptStore.set(scriptId, script);
 
     logger.success(`✅ 脚本更新成功: ${scriptId}`);

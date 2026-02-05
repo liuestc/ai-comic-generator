@@ -3,6 +3,7 @@ import { scriptService } from '../services/scriptService';
 import { imageService } from '../services/imageService';
 import { logger } from '../utils/logger';
 import { recommendShotSequence } from '../services/shotRecommendation';
+import { databaseService } from '../services/databaseService';
 import {
   GenerateScriptRequest,
   GenerateScriptResponse,
@@ -40,7 +41,7 @@ router.post('/generate-script', async (req: Request, res: Response) => {
     // 生成角色设定图
     logger.info('🎨 生成角色设定图...');
     const characterImageUrl = await imageService.generateCharacterImage(
-      script.characterDescription
+      script.characterDesign
     );
 
     // 更新脚本中的角色图URL
@@ -166,7 +167,7 @@ router.post('/script/:scriptId/panel/:panelId/regenerate', async (req: Request, 
     logger.info(`🎨 生成分格 ${panelId} 的图像...`);
     const panelsWithImages = await imageService.generatePanelImages(
       [panel],
-      script.characterDescription
+      script.characterDesign
     );
 
     const updatedPanel = panelsWithImages[0];
@@ -260,12 +261,12 @@ router.post('/generate-comic', async (req: Request, res: Response) => {
       } as GenerateComicResponse);
     }
 
-    logger.info(`🎬 收到漫画生成请求: ${script.title}`);
+    logger.info(`🎬 收到漫画生成请求: ${script.topic}`);
 
     // 生成所有分镜图
     const panelsWithImages = await imageService.generatePanelImages(
       script.panels,
-      script.characterDescription
+      script.characterDesign
     );
 
     // 为每个分镜添加对话气泡
@@ -289,7 +290,16 @@ router.post('/generate-comic', async (req: Request, res: Response) => {
     // 更新脚本
     script.panels = finalPanels;
     script.status = 'completed';
-    script.updatedAt = new Date();
+    script.updatedAt = new Date().toISOString();
+
+    // 保存到历史记录
+    try {
+      databaseService.saveComic(script);
+      logger.info('💾 漫画已保存到历史记录');
+    } catch (saveError: any) {
+      logger.warn('保存到历史记录失败', saveError);
+      // 不阻断响应，继续返回结果
+    }
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
     logger.success(`✅ 漫画生成完成，耗时 ${elapsed}s`);
