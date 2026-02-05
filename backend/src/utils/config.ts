@@ -6,9 +6,9 @@ dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 export const config = {
   // 服务器配置
-  port: parseInt(process.env.PORT || '3001', 10),
+  port: parseInt(process.env.PORT || '3002', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
-  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:5174',
 
   // AI 提供商配置
   activeProvider: (process.env.ACTIVE_PROVIDER || 'gemini') as 'openai' | 'gemini',
