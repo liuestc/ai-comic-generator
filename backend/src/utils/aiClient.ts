@@ -1,16 +1,18 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from '@google/genai';
 import OpenAI from 'openai';
 import { config } from './config';
 import { logger } from './logger';
 
 /**
  * AI 客户端工具类
- * 支持 OpenAI 和 Google Gemini
+ * 支持 OpenAI 和 Google Gemini (包括 Nano Banana Pro)
  */
 
 export class AIClient {
   private openaiClient?: OpenAI;
   private geminiClient?: GoogleGenerativeAI;
+  private genaiClient?: GoogleGenAI;
   private provider: 'openai' | 'gemini';
 
   constructor() {
@@ -23,8 +25,13 @@ export class AIClient {
       });
       logger.info(`✅ OpenAI client initialized`);
     } else {
+      // 初始化旧版 Gemini SDK（用于文本生成）
       this.geminiClient = new GoogleGenerativeAI(config.google.apiKey);
-      logger.info(`✅ Gemini client initialized`);
+      // 初始化新版 GenAI SDK（用于 Nano Banana Pro 图像生成）
+      this.genaiClient = new GoogleGenAI({
+        apiKey: config.google.apiKey,
+      });
+      logger.info(`✅ Gemini client initialized (with Nano Banana Pro support)`);
     }
   }
 
@@ -52,7 +59,7 @@ export class AIClient {
       if (this.provider === 'openai') {
         return await this.generateImageWithOpenAI(prompt);
       } else {
-        return await this.generateImageWithGemini(prompt);
+        return await this.generateImageWithNanoBananaPro(prompt);
       }
     } catch (error: any) {
       logger.error('Image generation failed', error);
@@ -121,23 +128,82 @@ export class AIClient {
   }
 
   /**
-   * 使用 Gemini (Imagen) 生成图片
+   * 使用 Nano Banana Pro (Gemini 3 Pro Image) 生成图片
+   * 参考 RedInk 的实现方式
    */
-  private async generateImageWithGemini(prompt: string): Promise<string> {
-    if (!this.geminiClient) {
-      throw new Error('Gemini client not initialized');
+  private async generateImageWithNanoBananaPro(prompt: string): Promise<string> {
+    if (!this.genaiClient) {
+      throw new Error('GenAI client not initialized');
     }
 
-    const model = this.geminiClient.getGenerativeModel({
-      model: config.models.image,
-    });
+    const model = config.models.image;
+    logger.info(`🍌 Generating image with Nano Banana Pro: ${model}`);
+    logger.debug(`  Prompt length: ${prompt.length} characters`);
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    
-    // Gemini Imagen 返回的是 base64 编码的图片
-    const imageData = response.text();
-    return imageData;
+    let imageData: string | null = null;
+
+    try {
+      // 使用流式 API 生成图片
+      logger.debug(`  Calling API: model=${model}`);
+      const stream = this.genaiClient.models.generateContentStream({
+        model: model,
+        contents: prompt,
+        config: {
+          temperature: config.models.temperature,
+          topP: 0.95,
+          maxOutputTokens: 32768,
+          responseModalities: ['IMAGE'],
+          safetySettings: [
+            { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.OFF },
+            { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.OFF },
+            { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.OFF },
+            { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.OFF },
+          ],
+          imageConfig: {
+            aspectRatio: '1:1',  // 可选: "1:1", "3:4", "4:3", "16:9", "9:16"
+          },
+        },
+      });
+
+      // 处理流式响应
+      for await (const chunk of await stream) {
+        if (chunk.candidates && chunk.candidates[0]?.content?.parts) {
+          for (const part of chunk.candidates[0].content.parts) {
+            // 检查是否有图片数据
+            if (part.inlineData && part.inlineData.data) {
+              imageData = part.inlineData.data;
+              const mimeType = part.inlineData.mimeType || 'image/png';
+              logger.debug(`  Received image data: ${imageData?.length || 0} bytes (base64)`);
+              logger.info(`✅ Nano Banana Pro image generation successful`);
+              
+              // 返回 base64 编码的图片
+              return `data:${mimeType};base64,${imageData}`;
+            }
+          }
+        }
+      }
+
+      // 如果没有收到图片数据
+      if (!imageData) {
+        logger.error('API returned empty, no image generated');
+        throw new Error(
+          '❌ Image generation failed: API returned empty\n\n' +
+          'Possible reasons:\n' +
+          '1. Prompt triggered safety filters (most common)\n' +
+          '2. Model does not support the current request\n' +
+          '3. Network transmission data loss\n\n' +
+          'Solutions:\n' +
+          '1. Modify the prompt to avoid sensitive content\n' +
+          '2. Simplify the prompt\n' +
+          '3. Check network connection and retry'
+        );
+      }
+
+      throw new Error('Failed to extract image data from response');
+    } catch (error: any) {
+      logger.error(`Nano Banana Pro generation failed: ${error.message}`);
+      throw error;
+    }
   }
 }
 
