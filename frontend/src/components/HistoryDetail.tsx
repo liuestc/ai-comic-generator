@@ -44,7 +44,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
     const loadComic = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3000/api/history/${comicId}`);
+        const response = await fetch(`/api/history/${comicId}`);
         const data = await response.json();
 
         if (data.success) {
@@ -67,7 +67,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/history/${comicId}`, {
+      const response = await fetch(`/api/history/${comicId}`, {
         method: 'DELETE',
       });
 
@@ -206,7 +206,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
               <label className="text-sm font-medium text-muted-foreground">角色设定图</label>
               <div className="mt-2">
                 <img
-                  src={`http://localhost:3000${comic.characterImageUrl}`}
+                  src={comic.characterImageUrl}
                   alt="角色设定"
                   className="w-64 h-64 object-cover rounded-lg border"
                 />
@@ -235,7 +235,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
               {panel.bubbleImageUrl || panel.imageUrl ? (
                 <div className="w-full aspect-square bg-muted rounded-lg overflow-hidden">
                   <img
-                    src={`http://localhost:3000${panel.bubbleImageUrl || panel.imageUrl}`}
+                    src={panel.bubbleImageUrl || panel.imageUrl}
                     alt={`第 ${panel.id} 格`}
                     className="w-full h-full object-cover"
                   />
@@ -275,7 +275,7 @@ export const HistoryDetail: React.FC<HistoryDetailProps> = ({
               {comic.panels.map((panel) => (
                 <div key={panel.id} className="aspect-square bg-muted rounded-lg overflow-hidden">
                   <img
-                    src={`http://localhost:3000${panel.bubbleImageUrl || panel.imageUrl}`}
+                    src={panel.bubbleImageUrl || panel.imageUrl}
                     alt={`第 ${panel.id} 格`}
                     className="w-full h-full object-cover"
                   />

@@ -39,7 +39,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({ onSelectComic }) => {
         params.append('status', statusFilter);
       }
 
-      const response = await fetch(`http://localhost:3000/api/history?${params}`);
+      const response = await fetch(`/api/history?${params}`);
       const data = await response.json();
 
       if (data.success) {
@@ -62,7 +62,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({ onSelectComic }) => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/history/${comicId}`, {
+      const response = await fetch(`/api/history/${comicId}`, {
         method: 'DELETE',
       });
 
@@ -184,7 +184,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({ onSelectComic }) => {
                 <div className="aspect-square bg-muted rounded-lg overflow-hidden mb-3">
                   {comic.characterImageUrl ? (
                     <img
-                      src={`http://localhost:3000${comic.characterImageUrl}`}
+                      src={comic.characterImageUrl}
                       alt={comic.topic}
                       className="w-full h-full object-cover"
                     />
