@@ -15,12 +15,14 @@
   "dependencies": {
     "@google/genai": "^1.40.0",
     "@google/generative-ai": "^0.24.1",
+    "@types/uuid": "^10.0.0",
     "axios": "^1.13.4",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "openai": "^6.17.0",
     "sharp": "^0.34.5",
+    "uuid": "^13.0.0",
     "yaml": "^2.8.2"
   },
   "devDependencies": {

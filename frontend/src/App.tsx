@@ -4,31 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Loader2, Sparkles, Image as ImageIcon, Download, Edit2, Wand2 } from 'lucide-react'
+import { Loader2, Sparkles, Edit2, Wand2, Camera, Download } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { toast } from 'sonner'
-
-interface Panel {
-  scene: string
-  dialogue: string
-  imageUrl?: string
-}
-
-interface ComicScript {
-  title: string
-  characterDescription: string
-  characterImageUrl?: string
-  panels: Panel[]
-}
+import { ScriptEditor, ComicScript as ScriptEditorScript } from '@/components/ScriptEditor'
+import { ShotSelector } from '@/components/ShotSelector'
 
 function App() {
   const [topic, setTopic] = useState('')
   const [loading, setLoading] = useState(false)
-  const [script, setScript] = useState<ComicScript | null>(null)
+  const [script, setScript] = useState<ScriptEditorScript | null>(null)
   const [generatingImages, setGeneratingImages] = useState(false)
-  const [currentStep, setCurrentStep] = useState<'input' | 'script' | 'comic'>('input')
+  const [currentStep, setCurrentStep] = useState<'input' | 'edit' | 'shot' | 'comic'>('input')
 
   const generateScript = async () => {
     if (!topic.trim()) {
@@ -37,7 +25,6 @@ function App() {
     }
 
     setLoading(true)
-    setCurrentStep('script')
     
     try {
       const response = await fetch('/api/generate-script', {
@@ -50,13 +37,30 @@ function App() {
 
       const data = await response.json()
       setScript(data.script)
+      setCurrentStep('edit')
       toast.success('脚本生成成功！')
     } catch (error) {
       toast.error('生成失败，请重试')
       console.error(error)
-      setCurrentStep('input')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleScriptUpdate = (updatedScript: ScriptEditorScript) => {
+    setScript(updatedScript)
+  }
+
+  const goToShotSelection = () => {
+    setCurrentStep('shot')
+  }
+
+  const handlePanelsUpdate = (panels: any[]) => {
+    if (script) {
+      setScript({
+        ...script,
+        panels
+      })
     }
   }
 
@@ -64,6 +68,7 @@ function App() {
     if (!script) return
 
     setGeneratingImages(true)
+    setCurrentStep('comic')
     
     try {
       const response = await fetch('/api/generate-comic', {
@@ -75,12 +80,12 @@ function App() {
       if (!response.ok) throw new Error('生成失败')
 
       const data = await response.json()
-      setScript(data.comic)
-      setCurrentStep('comic')
+      setScript(data.script)
       toast.success('漫画生成成功！')
     } catch (error) {
       toast.error('生成失败，请重试')
       console.error(error)
+      setCurrentStep('shot')
     } finally {
       setGeneratingImages(false)
     }
@@ -108,9 +113,9 @@ function App() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                  AI 漫剧生成器
+                  AI 漫剧生成器 Pro
                 </h1>
-                <p className="text-sm text-gray-500">一句话创意，四格漫画</p>
+                <p className="text-sm text-gray-500">专业编剧 + 分镜师工具</p>
               </div>
             </div>
             {currentStep !== 'input' && (
@@ -195,183 +200,214 @@ function App() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Features */}
+            <div className="grid grid-cols-3 gap-4 pt-4">
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <div className="text-2xl mb-2">✏️</div>
+                  <div className="font-medium text-sm">脚本编辑</div>
+                  <div className="text-xs text-muted-foreground mt-1">自由修改场景和对话</div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <div className="text-2xl mb-2">🎬</div>
+                  <div className="font-medium text-sm">镜头语言</div>
+                  <div className="text-xs text-muted-foreground mt-1">专业的景别和角度</div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="pt-6">
+                  <div className="text-2xl mb-2">🤖</div>
+                  <div className="font-medium text-sm">AI 推荐</div>
+                  <div className="text-xs text-muted-foreground mt-1">智能镜头序列建议</div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
 
-        {/* Step 2: Script Review */}
-        {currentStep === 'script' && script && (
+        {/* Step 2: Script Editing */}
+        {currentStep === 'edit' && script && (
           <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
-            <Card className="border-2">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-2xl">{script.title}</CardTitle>
-                    <CardDescription>查看并编辑脚本，然后生成漫画</CardDescription>
-                  </div>
-                  <Badge variant="secondary" className="text-sm">
-                    脚本已生成
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Character */}
-                <div className="space-y-3">
-                  <h3 className="font-semibold flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4" />
-                    角色设定
-                  </h3>
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-700">{script.characterDescription}</p>
-                  </div>
-                </div>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">编辑脚本</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  查看并修改场景和对话，然后选择镜头
+                </p>
+              </div>
+              <Badge variant="secondary">步骤 1/3</Badge>
+            </div>
 
-                <Separator />
-
-                {/* Panels */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold">四格分镜</h3>
-                  <div className="grid gap-4">
-                    {script.panels.map((panel, index) => (
-                      <Card key={index}>
-                        <CardHeader>
-                          <CardTitle className="text-sm">第 {index + 1} 格</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                          <div>
-                            <Label className="text-xs text-gray-500">场景描述</Label>
-                            <p className="text-sm mt-1">{panel.scene}</p>
-                          </div>
-                          <div>
-                            <Label className="text-xs text-gray-500">对话</Label>
-                            <p className="text-sm mt-1 font-medium">"{panel.dialogue}"</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={generateComic} 
-                  disabled={generatingImages}
-                  className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
-                  size="lg"
-                >
-                  {generatingImages ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      AI 正在绘制漫画...
-                    </>
-                  ) : (
-                    <>
-                      <ImageIcon className="w-4 h-4 mr-2" />
-                      生成四格漫画
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
+            <ScriptEditor 
+              script={script}
+              onScriptUpdate={handleScriptUpdate}
+              onGenerateComic={goToShotSelection}
+            />
           </div>
         )}
 
-        {/* Step 3: Comic Result */}
+        {/* Step 3: Shot Selection */}
+        {currentStep === 'shot' && script && (
+          <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2">
+                  <Camera className="w-6 h-6" />
+                  选择镜头
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  为每一格选择最合适的景别和角度
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary">步骤 2/3</Badge>
+                <Button variant="outline" onClick={() => setCurrentStep('edit')}>
+                  返回编辑
+                </Button>
+              </div>
+            </div>
+
+            <ShotSelector 
+              scriptId={script.id}
+              panels={script.panels}
+              onPanelsUpdate={handlePanelsUpdate}
+            />
+
+            <div className="flex justify-center pt-4">
+              <Button
+                size="lg"
+                onClick={generateComic}
+                disabled={generatingImages}
+                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600"
+              >
+                {generatingImages ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    AI 正在绘制漫画...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    生成完整漫画
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Comic Result */}
         {currentStep === 'comic' && script && (
           <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in duration-500">
-            <Card className="border-2">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-2xl">{script.title}</CardTitle>
-                    <CardDescription>你的专属 AI 漫画已生成</CardDescription>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold">{script.title}</h2>
+                <p className="text-sm text-muted-foreground mt-1">
+                  你的专属 AI 漫画已生成
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Badge variant="secondary">步骤 3/3</Badge>
+                <Button variant="outline" onClick={downloadComic}>
+                  <Download className="w-4 h-4 mr-2" />
+                  下载漫画
+                </Button>
+              </div>
+            </div>
+
+            <Tabs defaultValue="comic" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="comic">四格漫画</TabsTrigger>
+                <TabsTrigger value="character">角色设定</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="comic" className="space-y-4 mt-6">
+                {generatingImages ? (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <Loader2 className="w-12 h-12 animate-spin text-orange-500 mb-4" />
+                    <p className="text-lg font-medium">AI 正在绘制你的专属漫画...</p>
+                    <p className="text-sm text-muted-foreground mt-2">这可能需要 30-60 秒</p>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" onClick={downloadComic}>
-                      <Download className="w-4 h-4 mr-2" />
-                      下载漫画
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="comic" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="comic">四格漫画</TabsTrigger>
-                    <TabsTrigger value="character">角色设定</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="comic" className="space-y-4 mt-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      {script.panels.map((panel, index) => (
-                        <Dialog key={index}>
-                          <DialogTrigger asChild>
-                            <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-                              <CardContent className="p-0">
-                                {panel.imageUrl ? (
-                                  <img 
-                                    src={panel.imageUrl} 
-                                    alt={`第 ${index + 1} 格`}
-                                    className="w-full aspect-square object-cover rounded-lg"
-                                  />
-                                ) : (
-                                  <div className="w-full aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                                    <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-                                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    {script.panels.map((panel, index) => (
+                      <Dialog key={panel.id}>
+                        <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-sm flex items-center justify-between">
+                              <span>第 {index + 1} 格</span>
+                              <div className="flex gap-1">
+                                {panel.shotType && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {panel.shotType}
+                                  </Badge>
                                 )}
-                              </CardContent>
-                            </Card>
-                          </DialogTrigger>
-                          <DialogContent className="max-w-3xl">
-                            <DialogHeader>
-                              <DialogTitle>第 {index + 1} 格</DialogTitle>
-                              <DialogDescription>{panel.dialogue}</DialogDescription>
-                            </DialogHeader>
-                            {panel.imageUrl && (
+                                {panel.cameraAngle && (
+                                  <Badge variant="secondary" className="text-xs">
+                                    {panel.cameraAngle}
+                                  </Badge>
+                                )}
+                              </div>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="p-0">
+                            {panel.bubbleImageUrl ? (
                               <img 
-                                src={panel.imageUrl} 
-                                alt={`第 ${index + 1} 格`}
-                                className="w-full rounded-lg"
+                                src={panel.bubbleImageUrl} 
+                                alt={`第${index + 1}格`}
+                                className="w-full aspect-square object-cover"
                               />
+                            ) : (
+                              <div className="w-full aspect-square bg-gray-100 flex items-center justify-center">
+                                <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+                              </div>
                             )}
-                          </DialogContent>
-                        </Dialog>
-                      ))}
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="character" className="space-y-4 mt-6">
-                    <Card>
-                      <CardContent className="p-6">
-                        {script.characterImageUrl ? (
-                          <div className="space-y-4">
+                          </CardContent>
+                        </Card>
+                        <DialogContent className="max-w-3xl">
+                          {panel.bubbleImageUrl && (
                             <img 
-                              src={script.characterImageUrl} 
-                              alt="角色设定"
-                              className="w-full max-w-2xl mx-auto rounded-lg"
+                              src={panel.bubbleImageUrl} 
+                              alt={`第${index + 1}格`}
+                              className="w-full rounded-lg"
                             />
-                            <div className="p-4 bg-gray-50 rounded-lg">
-                              <p className="text-sm text-gray-700">{script.characterDescription}</p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center py-12">
-                            <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
+                          )}
+                        </DialogContent>
+                      </Dialog>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="character" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>角色设定</CardTitle>
+                    <CardDescription>{script.characterDescription}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {script.characterImageUrl && (
+                      <img 
+                        src={script.characterImageUrl} 
+                        alt="角色设定" 
+                        className="w-full max-w-2xl mx-auto rounded-lg shadow-lg"
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t mt-12 py-6 bg-white/50 backdrop-blur-sm">
-        <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-          <p>由 Google Nano Banana Pro 驱动 · 一句话创意，四格漫画</p>
-        </div>
+      <footer className="border-t mt-20 py-8 text-center text-sm text-gray-500">
+        <p>AI 漫剧生成器 Pro - 专业编剧与分镜师工具</p>
+        <p className="mt-1">Powered by Google Nano Banana Pro</p>
       </footer>
     </div>
   )

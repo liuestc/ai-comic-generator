@@ -88,7 +88,7 @@ export class ImageService {
     characterDescription: string
   ): Promise<ComicPanel> {
     try {
-      logger.info(`  生成第 ${panel.index} 格分镜...`);
+      logger.info(`  生成第 ${panel.id} 格分镜...`);
 
       // 构建分镜图的 Prompt
       const prompt = this.buildPanelPrompt(panel.sceneDescription, characterDescription);
@@ -97,10 +97,10 @@ export class ImageService {
       const imageUrl = await aiClient.generateImage(prompt);
 
       // 下载并保存图片
-      const filename = `panel_${Date.now()}_${panel.index}.png`;
+      const filename = `panel_${Date.now()}_${panel.id}.png`;
       const savedPath = await this.downloadAndSaveImage(imageUrl, filename);
 
-      logger.success(`  ✅ 第 ${panel.index} 格完成: ${filename}`);
+      logger.success(`  ✅ 第 ${panel.id} 格完成: ${filename}`);
 
       return {
         ...panel,
@@ -108,7 +108,7 @@ export class ImageService {
         imageUrl: `/images/${filename}`,
       };
     } catch (error: any) {
-      logger.error(`第 ${panel.index} 格生成失败`, error);
+      logger.error(`第 ${panel.id} 格生成失败`, error);
       throw error;
     }
   }
