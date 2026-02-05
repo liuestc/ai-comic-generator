@@ -12,6 +12,7 @@ import { ScriptEditor, ComicScript as ScriptEditorScript } from '@/components/Sc
 import { ShotSelector } from '@/components/ShotSelector'
 import { HistoryList } from '@/components/HistoryList'
 import { HistoryDetail } from '@/components/HistoryDetail'
+import { InspirationLibrary } from '@/components/InspirationLibrary'
 
 function App() {
   const [topic, setTopic] = useState('')
@@ -223,30 +224,11 @@ function App() {
               </CardContent>
             </Card>
 
-            {/* Examples */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">💡 创意示例</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-2">
-                  {[
-                    '一个程序员在修复 bug 时，意外发现了通往数字世界的入口',
-                    '一只猫咪学会了使用电脑，开始给主人发邮件',
-                    '一个咖啡杯突然有了生命，开始在办公室里冒险',
-                    '一个设计师的灵感精灵罢工了，他必须想办法哄它回来'
-                  ].map((example, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setTopic(example)}
-                      className="text-left text-sm p-3 rounded-lg border hover:bg-gray-50 transition-colors"
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {/* 灵感库 */}
+            <InspirationLibrary onSelect={(inspiration) => {
+              setTopic(inspiration.description);
+              toast.success(`已选择创意：${inspiration.title}`);
+            }} />
 
             {/* Features */}
             <div className="grid grid-cols-3 gap-4 pt-4">

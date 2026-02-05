@@ -16,6 +16,8 @@ export interface ComicPanel {
   bubbleImageUrl?: string
   shotType?: string
   cameraAngle?: string
+  designReason?: string  // 新增：设计理由
+  visualFocus?: string   // 新增：视觉重点
 }
 
 export interface ComicScript {
@@ -229,6 +231,27 @@ export function ScriptEditor({ script, onScriptUpdate, onGenerateComic }: Script
                     </p>
                   )}
                 </div>
+
+                {/* 新增：分镜设计理由 */}
+                {(panel.designReason || panel.visualFocus) && (
+                  <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <div className="flex items-start gap-2">
+                      <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div className="space-y-1 text-sm">
+                        {panel.designReason && (
+                          <p className="text-blue-700 dark:text-blue-300">
+                            <strong>设计理由：</strong>{panel.designReason}
+                          </p>
+                        )}
+                        {panel.visualFocus && (
+                          <p className="text-blue-600 dark:text-blue-400">
+                            <strong>视觉重点：</strong>{panel.visualFocus}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <Separator />
 

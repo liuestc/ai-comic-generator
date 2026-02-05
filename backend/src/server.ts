@@ -5,6 +5,8 @@ import { config, validateConfig } from './utils/config';
 import { logger } from './utils/logger';
 import comicRoutes from './routes/comicRoutes';
 import historyRoutes from './routes/historyRoutes';
+import inspirationRoutes from './routes/inspirationRoutes';
+import structureRoutes from './routes/structureRoutes';
 
 /**
  * Express 服务器主文件
@@ -29,6 +31,8 @@ function createApp() {
   // API 路由
   app.use('/api', comicRoutes);
   app.use('/api/history', historyRoutes);
+  app.use('/api/inspirations', inspirationRoutes);
+  app.use('/api/structures', structureRoutes);
 
   // 根路由
   app.get('/', (req, res) => {
@@ -43,6 +47,12 @@ function createApp() {
         historyDetail: 'GET /api/history/:id',
         saveHistory: 'POST /api/history',
         deleteHistory: 'DELETE /api/history/:id',
+        inspirations: 'GET /api/inspirations',
+        inspirationDetail: 'GET /api/inspirations/:id',
+        randomInspiration: 'GET /api/inspirations/random/one',
+        structures: 'GET /api/structures',
+        recommendStructure: 'GET /api/structures/recommend?panelCount=4',
+        structureDetail: 'GET /api/structures/:id',
       },
     });
   });
