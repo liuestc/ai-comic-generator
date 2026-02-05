@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  comic-ai:
+    build: .
+    container_name: comic-ai-app
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - ACTIVE_PROVIDER=${ACTIVE_PROVIDER:-gemini}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TEXT_MODEL=${TEXT_MODEL:-gemini-2.0-flash-exp}
+      - IMAGE_MODEL=${IMAGE_MODEL:-imagen-3.0-generate-001}
+    volumes:
+      - ./backend/public/images:/app/public/images
+    restart: unless-stopped

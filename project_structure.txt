@@ -1,0 +1,39 @@
+.
+├── DEPLOYMENT.md
+├── Dockerfile
+├── FEATURES.md
+├── README.md
+├── backend
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   │   └── images
+│   ├── src
+│   │   ├── prompts
+│   │   ├── routes
+│   │   ├── server.ts
+│   │   ├── services
+│   │   ├── types
+│   │   └── utils
+│   └── tsconfig.json
+├── docker-compose.yml
+├── frontend
+│   ├── index.html
+│   ├── package.json
+│   ├── pnpm-lock.yaml
+│   ├── src
+│   │   ├── App.vue
+│   │   ├── api
+│   │   ├── assets
+│   │   ├── components
+│   │   ├── main.ts
+│   │   ├── types
+│   │   ├── views
+│   │   └── vite-env.d.ts
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── project_structure.txt
+└── start.sh
+
+16 directories, 20 files
