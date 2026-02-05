@@ -28,7 +28,8 @@ router.get('/', (req: Request, res: Response) => {
  */
 router.get('/recommend', (req: Request, res: Response) => {
   try {
-    const panelCount = parseInt(req.query.panelCount as string) || 4;
+    const panelCountStr = req.query.panelCount;
+    const panelCount = panelCountStr ? parseInt(panelCountStr as string) : 4;
     const structure = recommendStructure(panelCount);
     
     res.json({
@@ -50,7 +51,7 @@ router.get('/recommend', (req: Request, res: Response) => {
  */
 router.get('/:id', (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const structure = getStructureById(id);
     
     if (!structure) {

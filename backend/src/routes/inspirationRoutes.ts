@@ -20,9 +20,12 @@ router.get('/', (req: Request, res: Response) => {
     }
     
     // 随机推荐
-    if (random === 'true') {
+    if (random === 'true' && inspirations.length > 0) {
       const randomIndex = Math.floor(Math.random() * inspirations.length);
-      inspirations = [inspirations[randomIndex]];
+      const randomItem = inspirations[randomIndex];
+      if (randomItem) {
+        inspirations = [randomItem];
+      }
     }
     
     res.json({

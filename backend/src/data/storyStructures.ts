@@ -193,14 +193,14 @@ export const STORY_STRUCTURES: StoryStructureTemplate[] = [
 // 根据格数推荐结构
 export function recommendStructure(panelCount: number): StoryStructureTemplate {
   if (panelCount === 4) {
-    return STORY_STRUCTURES[0]; // 起承转合
+    return STORY_STRUCTURES[0]!; // 起承转合
   } else if (panelCount >= 6 && panelCount <= 8) {
-    return STORY_STRUCTURES[1]; // 三幕剧
+    return STORY_STRUCTURES[1]!; // 三幕剧
   } else if (panelCount >= 10) {
-    return STORY_STRUCTURES[2]; // 英雄之旅
+    return STORY_STRUCTURES[2]!; // 英雄之旅
   } else {
     // 默认返回起承转合
-    return STORY_STRUCTURES[0];
+    return STORY_STRUCTURES[0]!;
   }
 }
 
