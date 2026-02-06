@@ -190,9 +190,7 @@ function App() {
                 if (result?.script) {
                   setScript(result.script);
                   setGeneratingImages(false); // 强制关闭加载状态，确保显示图片
-                  setCurrentStep('comic');
-                  setCurrentView('create'); 
-                  setActiveTab('create'); 
+                  // 不再自动跳转到 'create' 视图，让用户留在 Agent 页面查看详情
                   toast.success('🎉 AI智能体创作完成！');
                 }
               }}
@@ -422,9 +420,9 @@ function App() {
                             </CardTitle>
                           </CardHeader>
                           <CardContent className="p-0">
-                            {panel.bubbleImageUrl ? (
+                            {panel.bubbleImageUrl || panel.imageUrl ? (
                               <img 
-                                src={panel.bubbleImageUrl} 
+                                src={panel.bubbleImageUrl || panel.imageUrl} 
                                 alt={`第${index + 1}格`}
                                 className="w-full aspect-square object-cover"
                               />
@@ -436,9 +434,9 @@ function App() {
                           </CardContent>
                         </Card>
                         <DialogContent className="max-w-3xl">
-                          {panel.bubbleImageUrl && (
+                          {(panel.bubbleImageUrl || panel.imageUrl) && (
                             <img 
-                              src={panel.bubbleImageUrl} 
+                              src={panel.bubbleImageUrl || panel.imageUrl} 
                               alt={`第${index + 1}格`}
                               className="w-full rounded-lg"
                             />
