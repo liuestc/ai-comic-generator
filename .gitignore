@@ -21,6 +21,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Database (local development only)
+backend/data/comics.db
+backend/data/comics.db-journal
+backend/data/comics.db-wal
+
 # Generated images
 backend/public/images/*.png
 backend/public/images/*.jpg

@@ -85,9 +85,36 @@ export class CriticAgent extends EventEmitter {
         try {
           // 从 URL 读取图片
           const imageUrl = panel.imageUrl || '';
+          
+          // 验证imageUrl是否有效
+          if (!imageUrl || imageUrl === '/' || imageUrl.trim() === '') {
+            console.warn(`跳过无效的imageUrl: "${imageUrl}"`);
+            return null;
+          }
+          
           // 去掉开头的斜杠，避免路径拼接问题
           const relativePath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+          
+          // 验证相对路径是否有效
+          if (!relativePath || relativePath.trim() === '') {
+            console.warn(`跳过无效的相对路径: "${relativePath}"`);
+            return null;
+          }
+          
           const imagePath = path.join(process.cwd(), 'public', relativePath);
+          
+          // 检查文件是否存在且是文件而不是目录
+          if (!fs.existsSync(imagePath)) {
+            console.warn(`图片文件不存在: ${imagePath}`);
+            return null;
+          }
+          
+          const stats = fs.statSync(imagePath);
+          if (!stats.isFile()) {
+            console.warn(`路径不是文件: ${imagePath}`);
+            return null;
+          }
+          
           const imageBuffer = fs.readFileSync(imagePath);
           const base64Image = imageBuffer.toString('base64');
           
