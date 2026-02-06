@@ -14,13 +14,13 @@
 ## 🖥️ 系统截图 (System Screenshots)
 
 ### 首页与灵感库 (Home & Inspiration Library)
-![首页](https://files.manuscdn.com/user_upload_by_module/session_file/310519663318439904/nRuYobNejoLddajV.webp)
+![首页](docs/assets/screenshots/home.webp)
 
 ### 创意详情 (Inspiration Details)
-![创意详情](https://files.manuscdn.com/user_upload_by_module/session_file/310519663318439904/RNGzsQkhhqfXFchi.webp)
+![创意详情](docs/assets/screenshots/details.webp)
 
 ### 脚本生成与编辑 (Script Generation & Editing)
-![脚本生成](https://files.manuscdn.com/user_upload_by_module/session_file/310519663318439904/RYpksvCIWpZxGiPB.webp)
+![脚本生成](docs/assets/screenshots/script.webp)
 
 ## 🖼️ 成果展示 (Showcase)
 
