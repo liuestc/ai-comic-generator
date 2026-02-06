@@ -88,10 +88,10 @@ class DatabaseService {
         insertPanel.run(
           script.id,
           panel.id,
-          panel.scene,
-          panel.dialogue,
-          panel.shotType,
-          panel.cameraAngle,
+          panel.scene || '场景描述', // 提供默认值
+          panel.dialogue || '', // 提供默认值
+          panel.shotType || 'medium_shot', // 提供默认值
+          panel.cameraAngle || 'eye_level', // 提供默认值
           panel.imageUrl || null
         );
       }

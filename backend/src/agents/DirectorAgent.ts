@@ -212,9 +212,15 @@ ${JSON.stringify(thought, null, 2)}
       topic: idea,
       characterDesign: scriptData.characterDescription || scriptData.characterDesign,
       panels: scriptData.panels.map((panel: any) => ({
-        ...panel,
+        id: panel.id,
+        scene: panel.sceneDescription || panel.scene || '场景描述',
+        dialogue: panel.dialogue || '',
+        shotType: panel.shotType || 'medium_shot',
+        cameraAngle: panel.cameraAngle || 'eye_level',
+        imagePrompt: panel.sceneDescription || panel.scene,
         imageUrl: '',  // 稍后生成
-        status: 'pending' as const
+        bubbleImageUrl: '',
+        generatedAt: new Date()
       })),
       status: 'draft' as const,
       createdAt: new Date().toISOString()

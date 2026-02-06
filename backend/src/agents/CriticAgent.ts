@@ -83,8 +83,11 @@ export class CriticAgent extends EventEmitter {
     const imageParts = await Promise.all(
       comic.panels.map(async (panel) => {
         try {
-          // 从URL读取图片
-          const imagePath = path.join(process.cwd(), 'public', panel.imageUrl || '');
+          // 从 URL 读取图片
+          const imageUrl = panel.imageUrl || '';
+          // 去掉开头的斜杠，避免路径拼接问题
+          const relativePath = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+          const imagePath = path.join(process.cwd(), 'public', relativePath);
           const imageBuffer = fs.readFileSync(imagePath);
           const base64Image = imageBuffer.toString('base64');
           
