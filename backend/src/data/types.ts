@@ -14,10 +14,13 @@ export interface ShotDesign {
 
 export interface DialogueDesign {
   panelId: number;
-  dialogue: string;
-  technique: string;
-  characterVoice: string;
-  subtext: string;
+  speaker?: string;  // 发言人（新字段，可选）
+  dialogue?: string;  // 对话内容（兼容旧字段）
+  text?: string;  // 对话内容（新字段，可选）
+  technique?: string;  // 写作技巧（可选）
+  writingTip?: string;  // 写作提示（新字段，可选）
+  characterVoice?: string;  // 角色声音（可选）
+  subtext?: string;  // 潜台词（可选）
 }
 
 export interface ColorScheme {
