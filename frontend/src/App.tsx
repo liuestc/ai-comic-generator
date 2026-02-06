@@ -190,8 +190,16 @@ function App() {
                 if (result?.script) {
                   setScript(result.script);
                   setGeneratingImages(false); // 强制关闭加载状态，确保显示图片
-                  // 不再自动跳转到 'create' 视图，让用户留在 Agent 页面查看详情
-                  toast.success('🎉 AI智能体创作完成！');
+                  
+                  // 跳转到历史记录详情页查看生成的图片
+                  if (result.script.id) {
+                    setSelectedComicId(result.script.id);
+                    setCurrentView('detail');
+                    setActiveTab('history');
+                    toast.success('🎉 AI智能体创作完成，已保存至历史记录！');
+                  } else {
+                    toast.success('🎉 AI智能体创作完成！');
+                  }
                 }
               }}
             />
