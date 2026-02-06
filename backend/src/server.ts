@@ -7,6 +7,7 @@ import comicRoutes from './routes/comicRoutes';
 import historyRoutes from './routes/historyRoutes';
 import inspirationRoutes from './routes/inspirationRoutes';
 import structureRoutes from './routes/structureRoutes';
+import agentRoutes from './routes/agentRoutes';
 
 /**
  * Express 服务器主文件
@@ -33,6 +34,7 @@ function createApp() {
   app.use('/api/history', historyRoutes);
   app.use('/api/inspirations', inspirationRoutes);
   app.use('/api/structures', structureRoutes);
+  app.use('/api/agent', agentRoutes);
 
   // 根路由
   app.get('/', (req, res) => {
@@ -53,6 +55,10 @@ function createApp() {
         structures: 'GET /api/structures',
         recommendStructure: 'GET /api/structures/recommend?panelCount=4',
         structureDetail: 'GET /api/structures/:id',
+        agentCreateComic: 'POST /api/agent/create-comic',
+        agentStatus: 'GET /api/agent/status/:taskId',
+        agentEvents: 'GET /api/agent/events/:taskId',
+        agentTest: 'POST /api/agent/test',
       },
     });
   });
