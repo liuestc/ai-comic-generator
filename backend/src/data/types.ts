@@ -73,7 +73,13 @@ export interface Inspiration {
   character: CharacterProfile;
   
   // 专业标签
-  tags: string[];
+  tags: {
+    theme: string[];
+    emotion: string[];
+    visual: string[];
+    technique: string[];
+    audience: string[];
+  };
   
   // 测试验证
   tested: boolean;

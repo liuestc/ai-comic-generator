@@ -131,7 +131,13 @@ export const bugDigitalWorld: Inspiration = {
     greatestFear: '永远修不完的bug'
   },
   
-  tags: ['起承转合', '情感曲线强', '视觉冲击', '赛博朋克', '程序员共鸣'],
+  tags: {
+    theme: ['程序员生活', '虚拟与现实', '探索未知'],
+    emotion: ['焦虑', '震惊', '兴奋'],
+    visual: ['赛博朋克', '数字世界', '霸虹灯'],
+    technique: ['起承转合', '情感曲线强', '视觉冲击'],
+    audience: ['程序员', '科幻爱好者', '年轻人']
+  },
   tested: true,
   testResult: '⭐⭐⭐⭐⭐ 完美！角色一致性优秀，镜头语言应用到位，情感曲线完整。'
 };

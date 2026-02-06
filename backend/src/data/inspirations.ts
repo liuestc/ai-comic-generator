@@ -9,11 +9,7 @@ import { bugDigitalWorld } from './inspirations/bugDigitalWorld';
 // 导出所有创意
 export const INSPIRATIONS: Inspiration[] = [
   bugDigitalWorld,
-  // 未来可以添加更多创意
-  // catMirror,
-  // deliveryGhost,
-  // homeworkEscape,
-  // ...
+  // 其他创意待补充
 ];
 
 // 重新导出类型和常量

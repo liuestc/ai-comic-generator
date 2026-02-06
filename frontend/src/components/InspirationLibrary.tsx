@@ -53,7 +53,13 @@ interface Inspiration {
     deepDesire: string;
     greatestFear: string;
   };
-  tags: string[];
+  tags: {
+    theme: string[];
+    emotion: string[];
+    visual: string[];
+    technique: string[];
+    audience: string[];
+  };
   tested: boolean;
   testResult?: string;
 }
@@ -164,29 +170,45 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {inspirations.map((inspiration) => (
-            <Card key={inspiration.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Badge variant="outline">{CATEGORY_LABELS[inspiration.category]}</Badge>
-                  <Badge variant="secondary">{DIFFICULTY_STARS[inspiration.difficulty - 1]}</Badge>
+            <Card key={inspiration.id} className="hover:shadow-lg transition-shadow flex flex-col h-full">
+              <CardHeader className="space-y-2 pb-3">
+                <div className="flex items-center justify-between gap-2">
+                  <Badge variant="outline" className="text-xs truncate flex-shrink-0">
+                    {CATEGORY_LABELS[inspiration.category]}
+                  </Badge>
+                  <Badge variant="secondary" className="text-xs flex-shrink-0">
+                    {DIFFICULTY_STARS[inspiration.difficulty - 1]}
+                  </Badge>
                 </div>
                 {inspiration.tested && (
-                  <Badge variant="default" className="bg-green-500">
+                  <Badge variant="default" className="bg-green-500 text-xs w-fit">
                     ✓ 已测试
                   </Badge>
                 )}
               </CardHeader>
 
-              <CardContent className="space-y-3">
-                <h3 className="font-bold text-lg">{inspiration.title}</h3>
+              <CardContent className="space-y-3 flex-1 overflow-hidden">
+                <h3 className="font-bold text-lg truncate" title={inspiration.title}>
+                  {inspiration.title}
+                </h3>
                 <p className="text-sm text-muted-foreground line-clamp-2">
                   {inspiration.description}
                 </p>
 
                 {/* 专业标签 */}
-                <div className="flex flex-wrap gap-1">
-                  {inspiration.tags.map((tag, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
+                  {inspiration.tags.theme.slice(0, 2).map((tag, index) => (
+                    <Badge key={`theme-${index}`} variant="outline" className="text-xs truncate max-w-[80px]" title={tag}>
+                      {tag}
+                    </Badge>
+                  ))}
+                  {inspiration.tags.emotion.slice(0, 2).map((tag, index) => (
+                    <Badge key={`emotion-${index}`} variant="secondary" className="text-xs truncate max-w-[80px]" title={tag}>
+                      {tag}
+                    </Badge>
+                  ))}
+                  {inspiration.tags.visual.slice(0, 1).map((tag, index) => (
+                    <Badge key={`visual-${index}`} variant="default" className="text-xs truncate max-w-[80px]" title={tag}>
                       {tag}
                     </Badge>
                   ))}
@@ -216,7 +238,7 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
                 </div>
               </CardContent>
 
-              <CardFooter className="flex gap-2">
+              <CardFooter className="flex gap-2 pt-3 mt-auto">
                 <Button
                   onClick={() => handleUse(inspiration)}
                   className="flex-1"
