@@ -33,10 +33,13 @@ interface Inspiration {
   }>;
   dialogueDesigns: Array<{
     panelId: number;
-    dialogue: string;
-    technique: string;
-    characterVoice: string;
-    subtext: string;
+    speaker?: string;
+    dialogue?: string;
+    text?: string;
+    technique?: string;
+    writingTip?: string;
+    characterVoice?: string;
+    subtext?: string;
   }>;
   colorSchemes: Array<{
     panelId: number;
@@ -370,22 +373,36 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
               </TabsContent>
 
               {/* 对话设计 */}
-              <TabsContent value="dialogue" className="space-y-4">
-                <h3 className="font-bold">对话设计</h3>
+              <TabsContent value="dialogue" className="space-y-4 pt-4">
+                <h3 className="font-bold text-lg mb-4">对话设计</h3>
                 <div className="space-y-4">
                   {selectedInspiration.dialogueDesigns.map((dialogue, index) => (
-                    <Card key={index}>
-                      <CardContent className="pt-6 space-y-2">
-                        <p className="font-bold text-lg">"{dialogue.dialogue}"</p>
-                        <p className="text-sm text-muted-foreground">
-                          <strong>写作技巧：</strong>{dialogue.technique}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          <strong>角色声音：</strong>{dialogue.characterVoice}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          <strong>潜台词：</strong>{dialogue.subtext}
-                        </p>
+                    <Card key={index} className="border-2 border-gray-100">
+                      <CardContent className="pt-6 space-y-3">
+                        {dialogue.speaker && (
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                              {dialogue.speaker}
+                            </Badge>
+                            <span className="text-xs text-gray-400">第{dialogue.panelId}格</span>
+                          </div>
+                        )}
+                        <p className="font-bold text-lg text-gray-800">"{dialogue.dialogue || dialogue.text || '无对话'}"</p>
+                        {(dialogue.technique || dialogue.writingTip) && (
+                          <p className="text-sm text-muted-foreground">
+                            <strong>写作技巧：</strong>{dialogue.technique || dialogue.writingTip}
+                          </p>
+                        )}
+                        {dialogue.characterVoice && (
+                          <p className="text-sm text-muted-foreground">
+                            <strong>角色声音：</strong>{dialogue.characterVoice}
+                          </p>
+                        )}
+                        {dialogue.subtext && (
+                          <p className="text-sm text-muted-foreground">
+                            <strong>潜台词：</strong>{dialogue.subtext}
+                          </p>
+                        )}
                       </CardContent>
                     </Card>
                   ))}
