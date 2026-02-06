@@ -1,5 +1,6 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import * as fs from 'fs';
 import { ComicScript, ComicPanel } from '../types';
 
 const DB_PATH = path.join(__dirname, '../../data/comics.db');
@@ -8,6 +9,13 @@ class DatabaseService {
   private db: Database.Database;
 
   constructor() {
+    // 确保data目录存在
+    const dataDir = path.dirname(DB_PATH);
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+      console.log(`✅ Created data directory: ${dataDir}`);
+    }
+    
     this.db = new Database(DB_PATH);
     this.initDatabase();
   }
