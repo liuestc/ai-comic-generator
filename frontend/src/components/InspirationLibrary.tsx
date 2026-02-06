@@ -129,8 +129,7 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
   const handleViewDetails = (inspiration: Inspiration) => {
     console.log('Viewing details for:', inspiration);
     setSelectedInspiration(inspiration);
-    // 确保在设置完数据后再显示弹窗
-    setTimeout(() => setShowDetails(true), 10);
+    setShowDetails(true);
   };
 
   const handleUse = (inspiration: Inspiration) => {
