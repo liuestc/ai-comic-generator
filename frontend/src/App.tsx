@@ -147,8 +147,16 @@ function App() {
               <Tabs 
                 value={currentView === 'detail' ? 'history' : currentView} 
                 onValueChange={(v) => {
-                  setCurrentView(v as any);
-                  setActiveTab(v);
+                  const view = v as any;
+                  setCurrentView(view);
+                  setActiveTab(view);
+                  
+                  // 智能跳转逻辑：如果点击快速生成且已有脚本，确保显示结果页
+                  if (view === 'create' && script) {
+                    setCurrentStep('comic');
+                  } else if (view === 'create' && !script) {
+                    setCurrentStep('input');
+                  }
                 }}
               >
                 <TabsList>
@@ -181,9 +189,10 @@ function App() {
                 // 处理完成后的结果
                 if (result?.script) {
                   setScript(result.script);
+                  setGeneratingImages(false); // 强制关闭加载状态，确保显示图片
                   setCurrentStep('comic');
                   setCurrentView('create'); 
-                  setActiveTab('create'); // 确保顶部 Tab 高亮也同步切换
+                  setActiveTab('create'); 
                   toast.success('🎉 AI智能体创作完成！');
                 }
               }}
