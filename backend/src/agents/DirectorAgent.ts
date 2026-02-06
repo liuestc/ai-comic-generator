@@ -167,7 +167,13 @@ export class DirectorAgent extends EventEmitter {
     const prompt = `
 你是一位专业的漫画编剧。
 
-【重要：所有内容必须使用中文，包括标题、场景描述、对话内容等，禁止使用英文】
+【极其重要：所有输出内容必须使用中文，包括但不限于：
+- title（漫画标题）
+- characterDescription（角色描述）
+- sceneDescription（场景描述）
+- dialogue（对话内容）
+- colorMood（色彩情绪）
+严格禁止使用英文、拼音或其他非中文字符！】
 
 请基于以下思考结果，生成完整的漫画脚本：
 
@@ -188,20 +194,22 @@ ${JSON.stringify(thought, null, 2)}
 请严格按照以下JSON格式输出：
 
 {
-  "title": "漫画标题",
+  "title": "漫画标题（必须是中文）",
   "characterDescription": "${thought.character.appearance}",
   "panels": [
     {
       "id": 1,
-      "sceneDescription": "string",
-      "dialogue": "string",
+      "sceneDescription": "场景描述（必须是中文，例如：明亮的办公室，主角坐在电脑前）",
+      "dialogue": "对话内容（必须是中文，例如：今天的天气真好！）",
       "shotType": "close_up",
       "cameraAngle": "eye_level",
       "emotionLevel": 5,
-      "colorMood": "string"
+      "colorMood": "色彩情绪（必须是中文，例如：温暖、明亮）"
     }
   ]
 }
+
+注意：所有字符串字段必须使用中文，不允许出现英文单词！
 `;
 
     const result = await this.model.generateContent(prompt);
@@ -317,7 +325,7 @@ ${JSON.stringify(script, null, 2)}
     const prompt = `
 你是一位专业的漫画编剧。
 
-【重要：优化后的内容必须全部使用中文，禁止使用英文】
+【极其重要：优化后的所有内容必须使用中文，包括标题、场景描述、对话内容等所有字段，严格禁止使用英文、拼音或其他非中文字符！】
 
 请根据审查结果优化脚本：
 
