@@ -13,6 +13,7 @@ import { ShotSelector } from '@/components/ShotSelector'
 import { HistoryList } from '@/components/HistoryList'
 import { HistoryDetail } from '@/components/HistoryDetail'
 import { InspirationLibrary } from '@/components/InspirationLibrary'
+import { AgentMode } from '@/components/AgentMode'
 
 function App() {
   const [topic, setTopic] = useState('')
@@ -20,7 +21,7 @@ function App() {
   const [script, setScript] = useState<ScriptEditorScript | null>(null)
   const [generatingImages, setGeneratingImages] = useState(false)
   const [currentStep, setCurrentStep] = useState<'input' | 'edit' | 'shot' | 'comic'>('input')
-  const [currentView, setCurrentView] = useState<'create' | 'history' | 'detail'>('create')
+  const [currentView, setCurrentView] = useState<'create' | 'history' | 'detail' | 'agent'>('create')
   const [selectedComicId, setSelectedComicId] = useState<string | null>(null)
 
   const generateScript = async () => {
@@ -144,7 +145,11 @@ function App() {
             <div className="flex items-center gap-2">
               <Tabs value={currentView === 'detail' ? 'history' : currentView} onValueChange={(v) => setCurrentView(v as any)}>
                 <TabsList>
-                  <TabsTrigger value="create">生成漫画</TabsTrigger>
+                  <TabsTrigger value="create">快速生成</TabsTrigger>
+                  <TabsTrigger value="agent">
+                    <Sparkles className="w-4 h-4 mr-1" />
+                    AI智能体
+                  </TabsTrigger>
                   <TabsTrigger value="history">历史记录</TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -161,6 +166,22 @@ function App() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Agent Mode View */}
+        {currentView === 'agent' && (
+          <div className="max-w-4xl mx-auto">
+            <AgentMode
+              onComplete={(result) => {
+                // 处理完成后的结果
+                if (result?.script) {
+                  setScript(result.script);
+                  setCurrentStep('comic');
+                  toast.success('🎉 AI智能体创作完成！');
+                }
+              }}
+            />
+          </div>
+        )}
+
         {/* History List View */}
         {currentView === 'history' && (
           <HistoryList onSelectComic={handleSelectComic} />
