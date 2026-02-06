@@ -116,28 +116,29 @@ export class ImageService {
   /**
    * 构建角色设定图的 Prompt
    */
-  private buildCharacterPrompt(characterDescription: string): string {
-    return `Create a character design sheet for a comic. 
-Character description: ${characterDescription}
+   private buildCharacterPrompt(characterDescription: string): string {
+    return `创建一个角色设计参考图。
 
-Style: Modern manga/anime style, clean lines, vibrant colors.
-Layout: Full body character standing in a neutral pose, front view.
-Background: Simple white or light gradient background.
-Quality: High detail, professional comic book art style.`;
+角色描述：${characterDescription}
+
+风格：现代漫画/动漫风格，线条清晰，色彩鲜明。
+布局：全身角色站立，中性姿势，正面视角。
+背景：简单的白色或淡色渐变背景。
+质量：高细节，专业漫画艺术风格。`;;
   }
 
   /**
    * 构建分镜图的 Prompt
    */
   private buildPanelPrompt(sceneDescription: string, characterDescription: string): string {
-    return `Create a comic panel illustration.
+    return `创建一个漫画分镜插图。
 
-Character: ${characterDescription}
-Scene: ${sceneDescription}
+角色：${characterDescription}
+场景：${sceneDescription}
 
-Style: Modern manga/anime style, dynamic composition, expressive characters.
-Quality: High detail, professional comic book art, vibrant colors.
-Format: Single panel, suitable for a 4-panel comic strip.`;
+风格：现代漫画/动漫风格，动态构图，表情生动。
+质量：高细节，专业漫画艺术，色彩鲜明。
+格式：单个分镜，适合四格漫画。`;
   }
 
   /**

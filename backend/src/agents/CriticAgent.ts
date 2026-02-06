@@ -135,7 +135,11 @@ export class CriticAgent extends EventEmitter {
     const validImageParts = imageParts.filter(img => img !== null);
     
     const prompt = `
-你是一位专业的漫画评论家。请评估这部漫画的质量。
+你是一位专业的漫画评论家。
+
+【重要：所有评价内容必须使用中文，禁止使用英文】
+
+请评估这部漫画的质量。
 
 漫画信息：
 - 标题：${comic.title}
@@ -202,7 +206,11 @@ ${comic.panels.map(p => `
     analysis: ComicCritique['analysis']
   ): Promise<ComicCritique['scores']> {
     const prompt = `
-你是一位专业的漫画评论家。请基于以下分析结果，给出客观的评分。
+你是一位专业的漫画评论家。
+
+【重要：评分和评价必须使用中文】
+
+请基于以下分析结果，给出客观的评分。
 
 漫画分析：
 ${JSON.stringify(analysis, null, 2)}

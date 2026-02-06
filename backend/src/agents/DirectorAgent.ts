@@ -64,7 +64,11 @@ export class DirectorAgent extends EventEmitter {
    */
   private async think(idea: string): Promise<ThoughtProcess> {
     const prompt = `
-你是一位专业的漫画导演。请逐步思考如何创作这个漫画：
+你是一位专业的漫画导演。
+
+【重要：必须使用中文输出，禁止使用英文】
+
+请逐步思考如何创作这个漫画：
 
 用户创意：${idea}
 
@@ -161,7 +165,11 @@ export class DirectorAgent extends EventEmitter {
    */
   private async generateScript(idea: string, thought: ThoughtProcess): Promise<ComicScript> {
     const prompt = `
-你是一位专业的漫画编剧。请基于以下思考结果，生成完整的漫画脚本：
+你是一位专业的漫画编剧。
+
+【重要：所有内容必须使用中文，包括标题、场景描述、对话内容等，禁止使用英文】
+
+请基于以下思考结果，生成完整的漫画脚本：
 
 用户创意：${idea}
 
@@ -232,7 +240,11 @@ ${JSON.stringify(thought, null, 2)}
    */
   private async selfReview(script: ComicScript): Promise<SelfReview> {
     const prompt = `
-你是一位严格的漫画审查者。请评估以下脚本的质量：
+你是一位严格的漫画审查者。
+
+【重要：评估内容必须使用中文】
+
+请评估以下脚本的质量：
 
 脚本：
 ${JSON.stringify(script, null, 2)}
@@ -303,7 +315,11 @@ ${JSON.stringify(script, null, 2)}
    */
   private async optimize(script: ComicScript, review: SelfReview): Promise<ComicScript> {
     const prompt = `
-你是一位专业的漫画编剧。请根据审查结果优化脚本：
+你是一位专业的漫画编剧。
+
+【重要：优化后的内容必须全部使用中文，禁止使用英文】
+
+请根据审查结果优化脚本：
 
 原始脚本：
 ${JSON.stringify(script, null, 2)}
