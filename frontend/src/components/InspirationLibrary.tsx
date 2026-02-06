@@ -124,8 +124,10 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
   };
 
   const handleViewDetails = (inspiration: Inspiration) => {
+    console.log('Viewing details for:', inspiration);
     setSelectedInspiration(inspiration);
-    setShowDetails(true);
+    // 确保在设置完数据后再显示弹窗
+    setTimeout(() => setShowDetails(true), 10);
   };
 
   const handleUse = (inspiration: Inspiration) => {
@@ -168,67 +170,73 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
           暂无创意
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {inspirations.map((inspiration) => (
-            <Card key={inspiration.id} className="hover:shadow-lg transition-shadow flex flex-col h-full">
-              <CardHeader className="space-y-2 pb-3">
+            <Card key={inspiration.id} className="hover:shadow-lg transition-all flex flex-col h-full border-2 hover:border-purple-200">
+              <CardHeader className="space-y-3 pb-3">
                 <div className="flex items-center justify-between gap-2">
-                  <Badge variant="outline" className="text-xs truncate flex-shrink-0">
-                    {CATEGORY_LABELS[inspiration.category]}
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs flex-shrink-0">
+                  <div className="flex gap-2">
+                    <Badge variant="outline" className="text-xs px-2 py-0.5 bg-purple-50 text-purple-700 border-purple-200">
+                      {CATEGORY_LABELS[inspiration.category] || inspiration.category}
+                    </Badge>
+                    {inspiration.tested && (
+                      <Badge variant="default" className="bg-green-500 text-xs px-2 py-0.5">
+                        ✓ 已测试
+                      </Badge>
+                    )}
+                  </div>
+                  <Badge variant="secondary" className="text-xs font-mono">
                     {DIFFICULTY_STARS[inspiration.difficulty - 1]}
                   </Badge>
                 </div>
-                {inspiration.tested && (
-                  <Badge variant="default" className="bg-green-500 text-xs w-fit">
-                    ✓ 已测试
-                  </Badge>
-                )}
               </CardHeader>
 
-              <CardContent className="space-y-3 flex-1 overflow-hidden">
-                <h3 className="font-bold text-lg truncate" title={inspiration.title}>
-                  {inspiration.title}
-                </h3>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {inspiration.description}
-                </p>
+              <CardContent className="space-y-4 flex-1">
+                <div>
+                  <h3 className="font-bold text-xl mb-2 text-gray-800">
+                    {inspiration.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                    {inspiration.description}
+                  </p>
+                </div>
 
                 {/* 专业标签 */}
-                <div className="flex flex-wrap gap-1 max-h-16 overflow-hidden">
-                  {inspiration.tags.theme.slice(0, 2).map((tag, index) => (
-                    <Badge key={`theme-${index}`} variant="outline" className="text-xs truncate max-w-[80px]" title={tag}>
-                      {tag}
+                <div className="flex flex-wrap gap-2">
+                  {inspiration.tags.theme.slice(0, 3).map((tag, index) => (
+                    <Badge key={`theme-${index}`} variant="outline" className="text-xs bg-gray-50">
+                      #{tag}
                     </Badge>
                   ))}
                   {inspiration.tags.emotion.slice(0, 2).map((tag, index) => (
-                    <Badge key={`emotion-${index}`} variant="secondary" className="text-xs truncate max-w-[80px]" title={tag}>
-                      {tag}
-                    </Badge>
-                  ))}
-                  {inspiration.tags.visual.slice(0, 1).map((tag, index) => (
-                    <Badge key={`visual-${index}`} variant="default" className="text-xs truncate max-w-[80px]" title={tag}>
+                    <Badge key={`emotion-${index}`} variant="secondary" className="text-xs">
                       {tag}
                     </Badge>
                   ))}
                 </div>
 
                 {/* 情感曲线预览 */}
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">情感曲线：</p>
-                  <div className="flex items-end gap-1 h-8">
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-medium text-gray-500">叙事节奏 (情感强度)</p>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-end gap-2 h-12 px-2">
                     {inspiration.emotionCurve.map((intensity, index) => (
                       <div
                         key={index}
-                        className={`flex-1 rounded-t transition-all ${
+                        className={`flex-1 rounded-t-sm transition-all duration-500 ${
                           intensity >= 8
-                            ? 'bg-red-500'
+                            ? 'bg-gradient-to-t from-red-400 to-red-500'
                             : intensity >= 6
-                            ? 'bg-purple-400'
+                            ? 'bg-gradient-to-t from-purple-400 to-purple-500'
                             : intensity >= 4
-                            ? 'bg-blue-400'
-                            : 'bg-blue-300'
+                            ? 'bg-gradient-to-t from-blue-400 to-blue-500'
+                            : 'bg-gradient-to-t from-blue-300 to-blue-400'
                         }`}
                         style={{ height: `${(intensity / 10) * 100}%` }}
                         title={`第${index + 1}格: 强度${intensity}`}
@@ -238,20 +246,19 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
                 </div>
               </CardContent>
 
-              <CardFooter className="flex gap-2 pt-3 mt-auto">
+              <CardFooter className="flex gap-3 pt-4 border-t bg-gray-50/50">
                 <Button
                   onClick={() => handleUse(inspiration)}
-                  className="flex-1"
-                  size="sm"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-white shadow-sm"
                 >
-                  使用这个创意 →
+                  立即使用创意
                 </Button>
                 <Button
                   onClick={() => handleViewDetails(inspiration)}
                   variant="outline"
-                  size="sm"
+                  className="px-6 border-purple-200 text-purple-700 hover:bg-purple-50"
                 >
-                  查看详情
+                  详情
                 </Button>
               </CardFooter>
             </Card>
@@ -260,9 +267,9 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
       )}
 
       {/* 详情弹窗 */}
-      {selectedInspiration && (
-        <Dialog open={showDetails} onOpenChange={setShowDetails}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <Dialog open={showDetails} onOpenChange={setShowDetails}>
+        {selectedInspiration && (
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-2xl">
                 {selectedInspiration.title} - 创意详情
@@ -279,23 +286,43 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
               </TabsList>
 
               {/* 故事结构 */}
-              <TabsContent value="structure" className="space-y-4">
-                <div>
-                  <h3 className="font-bold mb-2">故事结构：{selectedInspiration.structure.type === 'kishotenketsu' ? '起承转合' : selectedInspiration.structure.type}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
+              <TabsContent value="structure" className="space-y-6 pt-4">
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
+                  <h3 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    叙事结构：{selectedInspiration.structure.type === 'kishotenketsu' ? '起承转合 (四格标准)' : selectedInspiration.structure.type}
+                  </h3>
+                  <p className="text-sm text-purple-800 leading-relaxed">
                     {selectedInspiration.description}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {selectedInspiration.structure.acts.map((act, index) => (
-                    <Card key={index}>
-                      <CardHeader>
-                        <CardTitle className="text-sm">第{act.panelId}格 - {act.name}</CardTitle>
+                    <Card key={index} className="border-2 border-gray-100">
+                      <CardHeader className="pb-2 bg-gray-50/50">
+                        <CardTitle className="text-sm font-bold flex items-center justify-between">
+                          <span>第 {act.panelId} 格</span>
+                          <Badge variant="outline" className="bg-white">{act.name}</Badge>
+                        </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-2">
-                        <p className="text-xs">{act.function}</p>
-                        <Badge variant="secondary">情感强度: {act.emotionIntensity}</Badge>
+                      <CardContent className="pt-4 space-y-3">
+                        <div className="min-h-[3rem]">
+                          <p className="text-xs font-medium text-gray-500 mb-1">功能定位：</p>
+                          <p className="text-sm text-gray-700">{act.function}</p>
+                        </div>
+                        <div className="pt-2 border-t">
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-gray-500">情感强度</span>
+                            <span className="font-bold text-purple-600">{act.emotionIntensity}/10</span>
+                          </div>
+                          <div className="w-full bg-gray-100 rounded-full h-1.5">
+                            <div 
+                              className="bg-purple-500 h-1.5 rounded-full" 
+                              style={{ width: `${act.emotionIntensity * 10}%` }}
+                            />
+                          </div>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -385,17 +412,20 @@ export const InspirationLibrary: React.FC<InspirationLibraryProps> = ({ onSelect
               </TabsContent>
             </Tabs>
 
-            <DialogFooter>
-              <Button onClick={() => {
-                handleUse(selectedInspiration);
-                setShowDetails(false);
-              }}>
-                使用这个创意（包含所有设定）
+            <DialogFooter className="sticky bottom-0 bg-white pt-4 border-t">
+              <Button 
+                className="w-full bg-purple-600 hover:bg-purple-700"
+                onClick={() => {
+                  handleUse(selectedInspiration);
+                  setShowDetails(false);
+                }}
+              >
+                立即使用这个创意（包含所有专业设定）
               </Button>
             </DialogFooter>
           </DialogContent>
-        </Dialog>
-      )}
+        )}
+      </Dialog>
     </div>
   );
 };
