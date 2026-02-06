@@ -97,30 +97,39 @@ export const homeworkEscape: Inspiration = {
   colorSchemes: [
     {
       panelId: 1,
-      mainColor: '多色',
-      mood: '无聊、慵懒'
+      mainColor: '灰色',
+      mood: '无聊、慵懒',
+      lighting: '普通的室内日光'
     },
     {
       panelId: 2,
-      mainColor: '多色',
-      mood: '惊讶、魔幻'
+      mainColor: '明黄色',
+      mood: '惊讶、魔幻',
+      lighting: '魔幻的闪光'
     },
     {
       panelId: 3,
-      mainColor: '多色',
-      mood: '活泼、搞笑'
+      mainColor: '彩色',
+      mood: '活泼、搞笑',
+      lighting: '明亮的室外光'
     },
     {
       panelId: 4,
-      mainColor: '多色',
-      mood: '和谐、平静'
+      mainColor: '淡蓝色',
+      mood: '和谐、平静',
+      lighting: '柔和的台灯光'
     }
   ],
   
   character: {
-      name: '小明（小学生）',
-      personality: '调皮、懒惰但善良'
-    , occupation: '未知', appearance: '待补充', catchphrase: '待补充', deepDesire: '待补充', greatestFear: '待补充'},
+    name: '小明（小学生）',
+    occupation: '学生',
+    appearance: '背着书包，戴着红领巾',
+    personality: '调皮、懒惰但善良',
+    catchphrase: '作业本跑啦！',
+    deepDesire: '永远不用写作业',
+    greatestFear: '班主任'
+  },
   
   tags: {
     theme: ['责任', '成长', '童趣'],

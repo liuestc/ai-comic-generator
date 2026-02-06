@@ -97,30 +97,39 @@ export const subwayTime: Inspiration = {
   colorSchemes: [
     {
       panelId: 1,
-      mainColor: '多色',
-      mood: '压抑、疲惫'
+      mainColor: '深灰色',
+      mood: '压抑、疲惫',
+      lighting: '地铁车厢的人造光'
     },
     {
       panelId: 2,
-      mainColor: '多色',
-      mood: '梦幻、模糊'
+      mainColor: '紫色',
+      mood: '梦幻、模糊',
+      lighting: '梦境般的光晕'
     },
     {
       panelId: 3,
-      mainColor: '多色',
-      mood: '古朴、陌生'
+      mainColor: '古铜色',
+      mood: '古朴、陌生',
+      lighting: '古代街道的自然阳光'
     },
     {
       panelId: 4,
-      mainColor: '多色',
-      mood: '惊慌、混乱'
+      mainColor: '红色',
+      mood: '惊慌、混乱',
+      lighting: '强烈的对比光'
     }
   ],
   
   character: {
-      name: '李明（上班族）',
-      personality: '勤奋、疲惫、适应力强'
-    , occupation: '未知', appearance: '待补充', catchphrase: '待补充', deepDesire: '待补充', greatestFear: '待补充'},
+    name: '李明（上班族）',
+    occupation: '公司职员',
+    appearance: '西装革履，提着公文包',
+    personality: '勤奋、疲惫、适应力强',
+    catchphrase: '我还要赶地铁...',
+    deepDesire: '睡个好觉',
+    greatestFear: '错过末班车'
+  },
   
   tags: {
     theme: ['穿越', '现代与古代', '命运'],

@@ -122,9 +122,14 @@ export const catMirror: Inspiration = {
   ],
   
   character: {
-      name: '小花（猫咪）',
-      personality: '好奇、友善、容易接受新事物'
-    , occupation: '未知', appearance: '待补充', catchphrase: '待补充', deepDesire: '待补充', greatestFear: '待补充'},
+    name: '小花（猫咪）',
+    occupation: '宠物',
+    appearance: '三花猫，眼睛圆圆的',
+    personality: '好奇、友善、容易接受新事物',
+    catchphrase: '喵？',
+    deepDesire: '探索镜子里的世界',
+    greatestFear: '吸尘器'
+  },
   
   tags: {
     theme: ['友谊', '孤独', '自我认知'],

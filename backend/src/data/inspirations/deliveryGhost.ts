@@ -97,30 +97,39 @@ export const deliveryGhost: Inspiration = {
   colorSchemes: [
     {
       panelId: 1,
-      mainColor: '多色',
-      mood: '阴森、不安'
+      mainColor: '深蓝色',
+      mood: '阴森、不安',
+      lighting: '昏暗的楼道灯光'
     },
     {
       panelId: 2,
-      mainColor: '多色',
-      mood: '惊吓、超自然'
+      mainColor: '青色',
+      mood: '惊吓、超自然',
+      lighting: '幽灵发出的冷光'
     },
     {
       panelId: 3,
-      mainColor: '多色',
-      mood: '缓和、倾听'
+      mainColor: '暖黄色',
+      mood: '缓和、倾听',
+      lighting: '温馨的室内灯光'
     },
     {
       panelId: 4,
-      mainColor: '多色',
-      mood: '温馨、治愈'
+      mainColor: '橙色',
+      mood: '温馨、治愈',
+      lighting: '柔和的暖光'
     }
   ],
   
   character: {
-      name: '小王（外卖员）',
-      personality: '善良、勇敢、富有同情心'
-    , occupation: '未知', appearance: '待补充', catchphrase: '待补充', deepDesire: '待补充', greatestFear: '待补充'},
+    name: '小王（外卖员）',
+    occupation: '外卖员',
+    appearance: '穿着黄色制服，戴着头盔',
+    personality: '善良、勇敢、富有同情心',
+    catchphrase: '您的外卖到了！',
+    deepDesire: '准时送达每一份温暖',
+    greatestFear: '差评'
+  },
   
   tags: {
     theme: ['孤独', '温情', '超自然'],
