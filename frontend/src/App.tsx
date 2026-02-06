@@ -22,6 +22,7 @@ function App() {
   const [generatingImages, setGeneratingImages] = useState(false)
   const [currentStep, setCurrentStep] = useState<'input' | 'edit' | 'shot' | 'comic'>('input')
   const [currentView, setCurrentView] = useState<'create' | 'history' | 'detail' | 'agent'>('create')
+  const [activeTab, setActiveTab] = useState('create')
   const [selectedComicId, setSelectedComicId] = useState<string | null>(null)
 
   const generateScript = async () => {
@@ -143,7 +144,13 @@ function App() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Tabs value={currentView === 'detail' ? 'history' : currentView} onValueChange={(v) => setCurrentView(v as any)}>
+              <Tabs 
+                value={currentView === 'detail' ? 'history' : currentView} 
+                onValueChange={(v) => {
+                  setCurrentView(v as any);
+                  setActiveTab(v);
+                }}
+              >
                 <TabsList>
                   <TabsTrigger value="create">快速生成</TabsTrigger>
                   <TabsTrigger value="agent">
@@ -175,6 +182,8 @@ function App() {
                 if (result?.script) {
                   setScript(result.script);
                   setCurrentStep('comic');
+                  setCurrentView('create'); 
+                  setActiveTab('create'); // 确保顶部 Tab 高亮也同步切换
                   toast.success('🎉 AI智能体创作完成！');
                 }
               }}

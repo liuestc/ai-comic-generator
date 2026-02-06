@@ -135,7 +135,8 @@ export const AgentMode: React.FC<AgentModeProps> = ({ onComplete }) => {
             setResult(statusData.result);
             setLoading(false);
             
-            if (onComplete) {
+            if (onComplete && statusData.result) {
+              // 确保传递的是最终优化后的脚本
               onComplete(statusData.result);
             }
           } else if (statusData.status === 'failed') {
@@ -189,7 +190,7 @@ export const AgentMode: React.FC<AgentModeProps> = ({ onComplete }) => {
           setResult(statusData.result);
           setLoading(false);
           
-          if (onComplete) {
+          if (onComplete && statusData.result) {
             onComplete(statusData.result);
           }
         } else if (statusData.status === 'failed') {
