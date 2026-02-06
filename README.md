@@ -131,4 +131,4 @@ pnpm dev
 
 欢迎提交 Pull Request 或 Issue！
 
-**Made with ❤️ by liuestc + Manus AI**
+**Made with ❤️ by liuestc**
