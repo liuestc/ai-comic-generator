@@ -47,6 +47,16 @@ router.post('/create-comic', async (req, res) => {
       try {
         const result = await orchestrator.createComic(idea);
         
+        // 保存到数据库
+        try {
+          const { databaseService } = require('../services/databaseService');
+          databaseService.saveComic(result.script);
+          console.log(`[Agent] 漫画已保存到数据库: ${result.script.id}`);
+        } catch (dbError) {
+          console.error('[Agent] 保存到数据库失败:', dbError);
+          console.error(dbError);
+        }
+        
         // 更新任务状态
         activeTasks.set(taskId, {
           orchestrator,

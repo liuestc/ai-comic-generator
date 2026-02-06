@@ -170,10 +170,29 @@ export class AgentOrchestrator extends EventEmitter {
    * 生成图片：调用图像生成服务
    */
   private async generateImages(script: ComicScript): Promise<ComicScript> {
-    // TODO: 实现图片生成
-    // 暂时返回原script，不生成图片
-    console.log('[AgentOrchestrator] 跳过图片生成（待实现）');
-    return script;
+    try {
+      const { ImageService } = await import('../services/imageService');
+      const imageService = new ImageService();
+      
+      // 1. 生成角色设定图
+      const characterImageUrl = await imageService.generateCharacterImage(script.characterDesign);
+      
+      // 2. 生成所有分镜图
+      const panelsWithImages = await imageService.generatePanelImages(
+        script.panels,
+        script.characterDesign
+      );
+      
+      return {
+        ...script,
+        characterImageUrl,
+        panels: panelsWithImages
+      };
+    } catch (error) {
+      console.error('[AgentOrchestrator] 图片生成失败:', error);
+      // 如果图片生成失败，返回原script
+      return script;
+    }
   }
   
   /**
