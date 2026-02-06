@@ -5,17 +5,21 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export interface ComicForCritique {
-  scriptId: string;
-  title: string;
-  characterDescription: string;
+  id: string;                      // 兼容ComicScript
+  scriptId?: string;               // 可选
+  title?: string;                  // 可选
+  topic?: string;                  // 兼容ComicScript
+  characterDesign?: string;        // 兼容ComicScript
+  characterDescription?: string;   // 可选
   panels: Array<{
     id: number;
-    sceneDescription: string;
+    scene?: string;                // 兼容ComicScript
+    sceneDescription?: string;     // 可选
     dialogue: string;
     shotType: string;
     cameraAngle: string;
-    emotionLevel: number;
-    imageUrl: string;
+    emotionLevel?: number;         // 可选
+    imageUrl?: string;             // 可选
   }>;
 }
 
@@ -26,7 +30,7 @@ export class CriticAgent extends EventEmitter {
   constructor(apiKey: string) {
     super();
     const genAI = new GoogleGenerativeAI(apiKey);
-    this.model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    this.model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     
     this.state = {
       status: 'idle',
@@ -80,7 +84,7 @@ export class CriticAgent extends EventEmitter {
       comic.panels.map(async (panel) => {
         try {
           // 从URL读取图片
-          const imagePath = path.join(process.cwd(), 'public', panel.imageUrl);
+          const imagePath = path.join(process.cwd(), 'public', panel.imageUrl || '');
           const imageBuffer = fs.readFileSync(imagePath);
           const base64Image = imageBuffer.toString('base64');
           

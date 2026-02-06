@@ -10,7 +10,7 @@ export class DirectorAgent extends EventEmitter {
   constructor(apiKey: string) {
     super();
     const genAI = new GoogleGenerativeAI(apiKey);
-    this.model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    this.model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
     
     this.state = {
       status: 'idle',

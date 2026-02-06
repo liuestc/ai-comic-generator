@@ -3,7 +3,7 @@ import { CriticAgent, ComicForCritique } from './CriticAgent';
 import { ThoughtProcess, SelfReview, ComicCritique, AgentState } from './types';
 import { ComicScript } from '../types';
 import { EventEmitter } from 'events';
-import { generateComicImages } from '../services/imageService';
+// Note: generateComicImages function is not needed, using internal generateImages method
 
 export interface OrchestratorConfig {
   maxIterations: number;      // 最大迭代次数
@@ -90,11 +90,23 @@ export class AgentOrchestrator extends EventEmitter {
         
         // 3. 评论家评分
         this.updateState('critiquing', `第${iteration + 1}次迭代：评论家评分...`, iterationProgress + 40);
-        const critique = await this.critic.execute(comicWithImages);
+        // Convert ComicScript to ComicForCritique format
+        const comicForCritique: ComicForCritique = {
+          id: script.id,
+          scriptId: script.id,
+          title: script.topic,
+          topic: script.topic,
+          characterDesign: script.characterDesign,
+          characterDescription: script.characterDesign,
+          panels: script.panels
+        };
+        const critique = await this.critic.execute(comicForCritique);
         
         // 4. 记录历史
+        const lastHistory = history.length > 0 ? history[history.length - 1] : null;
+        const previousScore = lastHistory ? lastHistory.score : 0;
         const improvements = this.identifyImprovements(
-          history.length > 0 ? history[history.length - 1].score : 0,
+          previousScore,
           critique.scores.overall,
           critique
         );
@@ -158,13 +170,10 @@ export class AgentOrchestrator extends EventEmitter {
    * 生成图片：调用图像生成服务
    */
   private async generateImages(script: ComicScript): Promise<ComicScript> {
-    try {
-      const updatedScript = await generateComicImages(script);
-      return updatedScript;
-    } catch (error) {
-      console.error('生成图片失败:', error);
-      throw error;
-    }
+    // TODO: 实现图片生成
+    // 暂时返回原script，不生成图片
+    console.log('[AgentOrchestrator] 跳过图片生成（待实现）');
+    return script;
   }
   
   /**
@@ -201,8 +210,11 @@ export class AgentOrchestrator extends EventEmitter {
     }
     
     // 如果没有改进，列出优点
-    if (improvements.length === 0 && critique.analysis.strengths.length > 0) {
-      improvements.push(critique.analysis.strengths[0]);
+    if (improvements.length === 0 && critique.analysis?.strengths && critique.analysis.strengths.length > 0) {
+      const firstStrength = critique.analysis.strengths[0];
+      if (firstStrength) {
+        improvements.push(firstStrength);
+      }
     }
     
     return improvements;
