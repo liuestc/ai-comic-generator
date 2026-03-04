@@ -17,10 +17,10 @@
 
 ```bash
 GOOGLE_API_KEY=你的密钥
-ACTIVE_PROVIDER=gemini
+AI_PROVIDER=gemini
 ```
 
-> 💡 **提示：** 如果使用 OpenAI，将 `ACTIVE_PROVIDER` 改为 `openai`，并填入 `OPENAI_API_KEY`。
+> 💡 **提示：** 如果使用 OpenAI，将 `AI_PROVIDER` 改为 `openai`，并填入 `OPENAI_API_KEY`。
 
 ### Step 2: 安装依赖
 
