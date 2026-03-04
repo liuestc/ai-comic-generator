@@ -2,12 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { config, validateConfig } from './utils/config';
-import { logger } from './utils/logger';
+import { logger, requestLogger } from './utils/logger';
 import comicRoutes from './routes/comicRoutes';
 import historyRoutes from './routes/historyRoutes';
 import inspirationRoutes from './routes/inspirationRoutes';
 import structureRoutes from './routes/structureRoutes';
 import agentRoutes from './routes/agentRoutes';
+import { generalLimiter } from './middleware/rateLimiter';
 
 /**
  * Express 服务器主文件
@@ -25,6 +26,12 @@ function createApp() {
 
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+  // 全局请求日志中间件
+  app.use(requestLogger);
+
+  // 应用通用限流（所有 API 请求）
+  app.use('/api', generalLimiter);
 
   // 静态文件服务（图片）
   app.use('/images', express.static(path.join(__dirname, '../public/images')));
@@ -68,9 +75,9 @@ function createApp() {
 
 function startServer() {
   // 打印启动信息
-  console.log('\n' + '='.repeat(60));
-  console.log('🚀 AI Comic Generator - Starting...');
-  console.log('='.repeat(60));
+  logger.info('='.repeat(60));
+  logger.info('🚀 AI Comic Generator - Starting...');
+  logger.info('='.repeat(60));
 
   // 验证配置
   validateConfig();
@@ -80,13 +87,14 @@ function startServer() {
 
   // 启动服务器
   app.listen(config.port, () => {
-    console.log('\n' + '✅ Server is running!');
-    console.log(`📍 URL: http://localhost:${config.port}`);
-    console.log(`🌍 Environment: ${config.nodeEnv}`);
-    console.log(`🤖 AI Provider: ${config.activeProvider}`);
-    console.log(`📝 Text Model: ${config.models.text}`);
-    console.log(`🎨 Image Model: ${config.models.image}`);
-    console.log('\n' + '='.repeat(60) + '\n');
+    logger.info('='.repeat(60));
+    logger.info('✅ Server is running!');
+    logger.info(`📍 URL: http://localhost:${config.port}`);
+    logger.info(`🌍 Environment: ${config.nodeEnv}`);
+    logger.info(`🤖 AI Provider: ${config.activeProvider}`);
+    logger.info(`📝 Text Model: ${config.models.text}`);
+    logger.info(`🎨 Image Model: ${config.models.image}`);
+    logger.info('='.repeat(60));
   });
 }
 

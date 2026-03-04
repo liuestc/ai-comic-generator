@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { scriptService } from '../services/scriptService';
+import { strictLimiter, scriptLimiter, imageLimiter } from '../middleware/rateLimiter';
 import { imageService } from '../services/imageService';
 import { logger } from '../utils/logger';
 import { recommendShotSequence } from '../services/shotRecommendation';
@@ -13,6 +14,11 @@ import {
 } from '../types';
 
 const router = Router();
+
+// 为生成端点应用严格限流
+router.use('/generate-script', scriptLimiter);
+router.use('/generate-comic', strictLimiter);
+router.use('/script/:scriptId/panel/:panelId/regenerate', imageLimiter);
 
 /**
  * POST /api/generate-script

@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 30
+    },
+    "auditLog": "/Users/liuestc/openclaw-workspace/ai-comic-generator/backend/logs/.15330ff04e4662c08ee6962482d0ea7e61143322-audit.json",
+    "files": [
+        {
+            "date": 1772624765369,
+            "name": "/Users/liuestc/openclaw-workspace/ai-comic-generator/backend/logs/app-2026-03-04.log",
+            "hash": "f7df2f93cc147d6483dee05ec328157c6a14f644f8dda59ba1826451ade8ffdd"
+        }
+    ],
+    "hashType": "sha256"
+}

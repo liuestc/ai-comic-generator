@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import * as fs from 'fs';
 import { ComicScript, ComicPanel } from '../types';
+import { logger } from '../utils/logger';
 
 const DB_PATH = path.join(__dirname, '../../data/comics.db');
 
@@ -13,7 +14,7 @@ class DatabaseService {
     const dataDir = path.dirname(DB_PATH);
     if (!fs.existsSync(dataDir)) {
       fs.mkdirSync(dataDir, { recursive: true });
-      console.log(`✅ Created data directory: ${dataDir}`);
+      logger.info(`✅ Created data directory: ${dataDir}`);
     }
     
     this.db = new Database(DB_PATH);
@@ -61,7 +62,7 @@ class DatabaseService {
       CREATE INDEX IF NOT EXISTS idx_panels_comic_id ON panels(comic_id);
     `);
 
-    console.log('✅ Database initialized successfully');
+    logger.info('✅ Database initialized successfully');
   }
 
   /**
@@ -106,7 +107,7 @@ class DatabaseService {
     });
 
     transaction();
-    console.log(`✅ Comic saved: ${script.id}`);
+    logger.info(`✅ Comic saved: ${script.id}`);
   }
 
   /**
@@ -218,7 +219,7 @@ class DatabaseService {
       DELETE FROM comics WHERE id = ?
     `).run(comicId);
 
-    console.log(`✅ Comic deleted: ${comicId}`);
+    logger.info(`✅ Comic deleted: ${comicId}`);
     return result.changes > 0;
   }
 
